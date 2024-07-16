@@ -1,3 +1,4 @@
+"use strict"
 document.addEventListener('DOMContentLoaded', function() {
     const dataTable = document.getElementById('dataTable');
     const dataBody = document.getElementById('dataBody');
