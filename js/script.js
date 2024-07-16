@@ -15,15 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             customers = data.customers;
             transactions = data.transactions;
-            
-            // Display initial data in the table
-            displayTable(customers, transactions);
+        displayTable(customers, transactions);
         })
         .catch(error => {
             console.error('Error fetching data:', error);
         });
-
-    // Filter table based on input values
     filterInput.addEventListener('input', filterTable);
     filterAmountInput.addEventListener('input', filterTable);
 
@@ -49,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
         transactions.forEach(transaction => {
             const customerName = customers.find(customer => customer.id === transaction.customer_id).name;
             const row = 
-        `<tr class="hover:bg-gray-700">
+        `<tr class="hover:bg-gray-800">
         <td class="px-6 py-4 whitespace-nowrap">${customerName}</td>
         <td class="px-6 py-4 whitespace-nowrap">${transaction.date}</td>
         <td class="px-6 py-4 whitespace-nowrap">${transaction.amount}</td>
@@ -62,20 +58,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (chart) {
             chart.destroy();
         }
-
+    
         const customerTransactions = transactions.filter(transaction => transaction.customer_id === customerId);
         const dates = [...new Set(customerTransactions.map(transaction => transaction.date))];
         const totalAmounts = dates.map(date => {
             return customerTransactions.filter(transaction => transaction.date === date)
                                       .reduce((acc, curr) => acc + curr.amount, 0);
         });
-// -------------------- Chart With Bar ------------------------- 
-        chart = new Chart(ctx, {
+            const customer = customers.find(customer => customer.id === customerId);
+        const customerName = customer ? customer.name : '';
+            chart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: dates,
                 datasets: [{
-                    label: 'Total Amount',
+                    label: `Total Amount Of ${customerName}`,
                     data: totalAmounts,
                     backgroundColor: '#3182ce',
                     borderColor: '#3182ce',
@@ -96,7 +93,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
+    
+// For Show Defult chart Only 
+updateChart(); 
 
 
 
@@ -128,22 +127,10 @@ document.addEventListener('DOMContentLoaded', function() {
 //     });
 // }
 
-
-
-
-
-
-
-
-
-
-    // Initial chart display
-    updateChart(1); // Display chart for the first customer by default
-
     // Event listener for table row click (to update chart)
     dataTable.addEventListener('click', function(event) {
         if (event.target.tagName === 'TD') {
-            const rowIndex = event.target.parentNode.rowIndex - 1; // Subtract header row
+            const rowIndex = event.target.parentNode.rowIndex - 1; 
             const customerId = transactions[rowIndex].customer_id;
             updateChart(customerId);
         }
