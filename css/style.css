@@ -2,3 +2,6 @@ tr{
     transition: .2s;
     cursor: pointer;
 }
+input{
+    color: black;
+}
