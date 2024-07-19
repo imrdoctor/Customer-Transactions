@@ -41,23 +41,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         displayTable(customers, filteredTransactions);
-
-        // Optional: Reset chart when filter changes
-        // updateChart(); // Uncomment this line if you want to reset chart on filter change
     }
 
     function displayTable(customers, transactions) {
         dataBody.innerHTML = '';
-        transactions.forEach(transaction => {
-            const customerName = customers.find(customer => customer.id === transaction.customer_id).name;
-            const row = 
-                `<tr class="hover:bg-gray-800" data-customer-id="${transaction.customer_id}">
-                    <td class="px-6 py-4 whitespace-nowrap">${customerName}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${transaction.date}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${transaction.amount}</td>
-                </tr>`;
-            dataBody.innerHTML += row;
-        });
+        if (transactions.length === 0){
+            dataBody.innerHTML = `
+            <tr>
+                <td colspan="3" class="px-6 py-4 text-center text-red-500">
+                No Customer transactions found
+                </td>
+            </tr>
+            `;
+            
+        }
+        else {
+            // إضافة الصفوف إلى الجدول
+            transactions.forEach(transaction => {
+                const customerName = customers.find(customer => customer.id === transaction.customer_id).name;
+                const row = 
+                    `<tr class="hover:bg-gray-800" data-customer-id="${transaction.customer_id}">
+                        <td class="px-6 py-4 whitespace-nowrap">${customerName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${transaction.date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${transaction.amount}</td>
+                    </tr>`;
+                dataBody.innerHTML += row;
+            });
+        }
     }
 
     function updateChart(customerId) {
