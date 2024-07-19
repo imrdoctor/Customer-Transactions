@@ -1,4 +1,5 @@
-"use strict"
+"use strict";
+
 document.addEventListener('DOMContentLoaded', function() {
     const dataTable = document.getElementById('dataTable');
     const dataBody = document.getElementById('dataBody');
@@ -16,11 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             customers = data.customers;
             transactions = data.transactions;
-        displayTable(customers, transactions);
+            displayTable(customers, transactions);
         })
         .catch(error => {
             console.error('Error fetching data:', error);
         });
+
     filterInput.addEventListener('input', filterTable);
     filterAmountInput.addEventListener('input', filterTable);
 
@@ -46,11 +48,11 @@ document.addEventListener('DOMContentLoaded', function() {
         transactions.forEach(transaction => {
             const customerName = customers.find(customer => customer.id === transaction.customer_id).name;
             const row = 
-        `<tr class="hover:bg-gray-800">
-        <td class="px-6 py-4 whitespace-nowrap">${customerName}</td>
-        <td class="px-6 py-4 whitespace-nowrap">${transaction.date}</td>
-        <td class="px-6 py-4 whitespace-nowrap">${transaction.amount}</td>
-        </tr>`;
+                `<tr class="hover:bg-gray-800">
+                    <td class="px-6 py-4 whitespace-nowrap">${customerName}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${transaction.date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${transaction.amount}</td>
+                </tr>`;
             dataBody.innerHTML += row;
         });
     }
@@ -59,16 +61,18 @@ document.addEventListener('DOMContentLoaded', function() {
         if (chart) {
             chart.destroy();
         }
-    
+
         const customerTransactions = transactions.filter(transaction => transaction.customer_id === customerId);
         const dates = [...new Set(customerTransactions.map(transaction => transaction.date))];
         const totalAmounts = dates.map(date => {
             return customerTransactions.filter(transaction => transaction.date === date)
-                                      .reduce((acc, curr) => acc + curr.amount, 0);
+                .reduce((acc, curr) => acc + curr.amount, 0);
         });
-            const customer = customers.find(customer => customer.id === customerId);
-        const customerName = customer ? customer.name : '';
-            chart = new Chart(ctx, {
+
+        const customer = customers.find(customer => customer.id === customerId);
+        const customerName = customer ? customer.name : 'Undfine The User';
+
+        chart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: dates,
@@ -94,46 +98,28 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
-// For Show Defult chart Only 
-updateChart(); 
 
-
-
-// -------------------- Chart With Line ------------------------- 
-//     chart = new Chart(ctx, {
-//         type: 'line', 
-//         data: {
-//             labels: dates,
-//             datasets: [{
-//                 label: 'Total Amount',
-//                 data: totalAmounts,
-//                 fill: false, 
-//                 borderColor: '#3182ce',
-//                 borderWidth: 2
-//             }]
-//         },
-//         options: {
-//             scales: {
-//                 y: {
-//                     beginAtZero: true,
-//                     ticks: {
-//                         callback: function(value) {
-//                             return '$' + value;
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     });
-// }
+    // Initial chart display (default)
 
     // Event listener for table row click (to update chart)
     dataTable.addEventListener('click', function(event) {
         if (event.target.tagName === 'TD') {
-            const rowIndex = event.target.parentNode.rowIndex - 1; 
+            const rowIndex = event.target.parentNode.rowIndex - 1;
             const customerId = transactions[rowIndex].customer_id;
             updateChart(customerId);
         }
     });
+
 });
+
+// Defult Chart Text
+const canvas = document.querySelector('canvas'),
+ctx = canvas.getContext('2d')
+// Font Size
+ctx.font = '30px Arial'
+// center text
+ctx.textAlign = 'center'
+// color white
+ctx.fillStyle = 'white'
+// draw text
+ctx.fillText('Select One To Get Date', canvas.width / 2, canvas.height / 2)
