@@ -41,6 +41,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         displayTable(customers, filteredTransactions);
+
+        // Optional: Reset chart when filter changes
+        // updateChart(); // Uncomment this line if you want to reset chart on filter change
     }
 
     function displayTable(customers, transactions) {
@@ -48,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
         transactions.forEach(transaction => {
             const customerName = customers.find(customer => customer.id === transaction.customer_id).name;
             const row = 
-                `<tr class="hover:bg-gray-800">
+                `<tr class="hover:bg-gray-800" data-customer-id="${transaction.customer_id}">
                     <td class="px-6 py-4 whitespace-nowrap">${customerName}</td>
                     <td class="px-6 py-4 whitespace-nowrap">${transaction.date}</td>
                     <td class="px-6 py-4 whitespace-nowrap">${transaction.amount}</td>
@@ -70,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const customer = customers.find(customer => customer.id === customerId);
-        const customerName = customer ? customer.name : 'Undfine The User';
+        const customerName = customer ? customer.name : 'Undefined User';
 
         chart = new Chart(ctx, {
             type: 'bar',
@@ -97,29 +100,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
-    }
-
-    // Initial chart display (default)
+    }   
 
     // Event listener for table row click (to update chart)
     dataTable.addEventListener('click', function(event) {
         if (event.target.tagName === 'TD') {
-            const rowIndex = event.target.parentNode.rowIndex - 1;
-            const customerId = transactions[rowIndex].customer_id;
+            const row = event.target.parentNode;
+            const customerId = parseInt(row.getAttribute('data-customer-id'));
             updateChart(customerId);
+
+            // Optional: Highlight the clicked row if needed
+            const rows = document.querySelectorAll('#dataTable tbody tr');
+            rows.forEach(row => row.classList.remove('bg-gray-800'));
+            row.classList.add('bg-gray-800');
         }
     });
 
-});
+    // Default Chart Text
+    const canvas = document.querySelector('canvas');
+    const ctxChartText = canvas.getContext('2d');
+    // Font Size
+    ctxChartText.font = '30px Arial';
+    // Center text
+    ctxChartText.textAlign = 'center';
+    // Color white
+    ctxChartText.fillStyle = 'white';
+    // Draw text
+    ctxChartText.fillText('Select One To Get Data', canvas.width / 2, canvas.height / 2);
 
-// Defult Chart Text
-const canvas = document.querySelector('canvas'),
-ctx = canvas.getContext('2d')
-// Font Size
-ctx.font = '30px Arial'
-// center text
-ctx.textAlign = 'center'
-// color white
-ctx.fillStyle = 'white'
-// draw text
-ctx.fillText('Select One To Get Date', canvas.width / 2, canvas.height / 2)
+});
