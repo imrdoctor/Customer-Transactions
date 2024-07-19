@@ -1,6 +1,10 @@
+body{
+    background-image: url("../backall.svg");
+}
 tr{
     transition: .2s;
     cursor: pointer;
+    background-image: url("../backall.svg");
 }
 input{
     background: #374151;
