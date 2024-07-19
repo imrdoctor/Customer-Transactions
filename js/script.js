@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
         }
         else {
-            // إضافة الصفوف إلى الجدول
             transactions.forEach(transaction => {
                 const customerName = customers.find(customer => customer.id === transaction.customer_id).name;
                 const row = 
